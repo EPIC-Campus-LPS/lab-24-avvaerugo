@@ -25,7 +25,8 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param element the element to be added
      */
     public void add(E element) {
-
+        myHeap.add(element);
+        reverseHeapify(myHeap.size() - 1);
     }
 
     /**
@@ -36,7 +37,9 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param posTwo the second element's position in the queue
      */
     private void swap(int posOne, int posTwo) {
-
+        E temp = myHeap.get(posOne);
+        myHeap.set(posOne, myHeap.get(posTwo));
+        myHeap.set(posTwo, temp);
     }
 
     /**
@@ -46,7 +49,7 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return true if the element is in the queue, false otherwise
      */
     public boolean contains(E element) {
-        return false;
+        return myHeap.contains(element);
     }
 
     /**
@@ -56,7 +59,7 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the element of highest priority queue
      */
     public E peek() {
-        return null;
+        return myHeap.get(0);
     }
 
     /**
@@ -66,7 +69,12 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the element of highest priority
      */
     public E poll() {
-        return null;
+        E polledVal = myHeap.get(0);
+        if (remove(myHeap.get(0))) {
+            return polledVal;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -76,7 +84,40 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param pos the starting position for heapify
      */
     private void heapify(int pos) {
+        // checks need to be added to keep it in the heap size :c
+        if (myHeap.size() > (pos * 2) + 2) {
+            int minChildPos;
+            if (myHeap.get((pos * 2) + 1).compareTo(myHeap.get((pos * 2) + 2)) > 0) {
+                minChildPos = (pos * 2) + 2;
+            } else {
+                minChildPos = (pos * 2) + 1;
+            }
+            if (myHeap.get(pos).compareTo(myHeap.get(minChildPos)) > 0) {
+                swap(pos, minChildPos);
+                heapify(minChildPos);
+            }
+        } else if (myHeap.size() > (pos * 2) + 1) {
+            int minChildPos = (pos * 2) + 1;
+            if (myHeap.get(pos).compareTo(myHeap.get(minChildPos)) > 0) {
+                swap(pos, minChildPos);
+                heapify(minChildPos);
+            }
+        }
+    }
 
+    /**
+     * Will "sift up" the element at the given position
+     * up to restore the heap property
+     *
+     * @param pos the starting position for reverseHeapify
+     */
+    private void reverseHeapify(int pos) {
+        E val = myHeap.get(pos);
+        E parentVal = myHeap.get((pos - 1) / 2);
+        if (val.compareTo(parentVal) < 0) {
+            swap(pos, (pos - 1) / 2);
+            reverseHeapify((pos - 1) / 2);
+        }
     }
 
     /**
@@ -88,7 +129,15 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return true if an element was removed from the queue, false otherwise
      */
     public boolean remove(E element) {
-        return false;
+        int index = myHeap.indexOf(element);
+        if (index == -1) {
+            return false;
+        } else {
+            swap(index, myHeap.size() - 1);
+            myHeap.remove(myHeap.size() - 1);
+            heapify(index);
+            return true;
+        }
     }
 
     /**
@@ -97,7 +146,7 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the number of elements in the queue
      */
     public int size() {
-        return -1;
+        return myHeap.size();
     }
 
     /**
@@ -108,7 +157,11 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @return the String representation of the heap
      */
     public String toString() {
-        return "toString";
+        String out = "";
+        for (E i : myHeap) {
+            out += i.toString() + " ";
+        }
+        return out.substring(0,out.length() - 1);
     }
 
 
@@ -119,8 +172,7 @@ public class PriorityQueue<E extends Comparable<E>> {
      * @param args
      */
     public static void main(String[] args) {
-// TODO Auto-generated method stub
-
+        System.out.println("i'm doing all my testing through junit tests because writing an entire console program is very exhausting and was never explicitly stated to be a requirement");
     }
 
 }
